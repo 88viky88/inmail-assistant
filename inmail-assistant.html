@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LinkedIn InMail Assistant – Confluent</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Segoe UI', sans-serif; }
+  pre { white-space: pre-wrap; font-family: 'Segoe UI', sans-serif; }
+  .spinner { border: 3px solid rgba(255,255,255,0.2); border-top-color: #60a5fa; border-radius: 50%; width: 22px; height: 22px; animation: spin 0.8s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 1rem; }
+  .input-field { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.18); border-radius: 0.75rem; color: white; padding: 0.85rem 1rem; width: 100%; font-size: 0.875rem; outline: none; transition: border-color 0.2s; box-sizing: border-box; }
+  .input-field::placeholder { color: rgba(255,255,255,0.3); }
+  .input-field:focus { border-color: #60a5fa; }
+  .btn-primary { background: linear-gradient(135deg, #3b82f6, #6366f1); color: white; border: none; border-radius: 0.75rem; padding: 1rem 2rem; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; transition: opacity 0.2s, transform 0.2s; }
+  .btn-primary:hover:not(:disabled) { opacity: 0.9; transform: scale(1.01); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .count-btn { border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.5); border-radius: 0.75rem; padding: 0.65rem; font-size: 1.25rem; font-weight: 700; cursor: pointer; transition: all 0.2s; flex: 1; }
+  .count-btn.active { border-color: #60a5fa; background: rgba(96,165,250,0.15); color: #93c5fd; }
+  .cta-btn { border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); border-radius: 0.75rem; padding: 1rem; cursor: pointer; text-align: left; transition: all 0.2s; width: 100%; }
+  .cta-btn.active-cv { border-color: #60a5fa; background: rgba(96,165,250,0.12); }
+  .cta-btn.active-call { border-color: #818cf8; background: rgba(129,140,248,0.12); }
+  .msg-card { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 1rem; overflow: hidden; margin-bottom: 1rem; }
+  .msg-header { padding: 1.1rem 1.5rem; display: flex; align-items: center; gap: 0.75rem; cursor: pointer; transition: background 0.2s; }
+  .msg-header:hover { background: rgba(255,255,255,0.05); }
+  .msg-body { padding: 0 1.5rem 1.5rem; display: none; }
+  .msg-body.open { display: block; }
+  .copy-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.6); border-radius: 0.5rem; padding: 0.3rem 0.7rem; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .copy-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+  .subj-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; gap: 1rem; }
+  .badge { font-size: 0.7rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 9999px; border: 1px solid; white-space: nowrap; }
+  .badge-blue   { background: rgba(96,165,250,0.15); color: #93c5fd; border-color: rgba(96,165,250,0.3); }
+  .badge-indigo { background: rgba(129,140,248,0.15); color: #a5b4fc; border-color: rgba(129,140,248,0.3); }
+  .badge-purple { background: rgba(168,85,247,0.15); color: #d8b4fe; border-color: rgba(168,85,247,0.3); }
+  .badge-pink   { background: rgba(236,72,153,0.15); color: #f9a8d4; border-color: rgba(236,72,153,0.3); }
+  .section-inner { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.75rem; padding: 1rem; margin-bottom: 0.75rem; }
+</style>
+</head>
+<body class="min-h-screen" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1e1b4b 100%);">
+
+<div style="max-width:860px; margin:0 auto; padding: 2.5rem 1.25rem 4rem;">
+
+  <!-- Header -->
+  <div style="text-align:center; margin-bottom:2rem;">
+    <div style="display:inline-flex; align-items:center; justify-content:center; width:64px; height:64px; background:linear-gradient(135deg,#3b82f6,#6366f1); border-radius:1rem; margin-bottom:1.25rem; box-shadow:0 4px 20px rgba(99,102,241,0.4);">
+      <svg width="30" height="30" fill="white" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    </div>
+    <h1 style="color:white; font-size:2rem; font-weight:700; margin:0 0 0.5rem;">LinkedIn InMail Assistant</h1>
+    <p style="color:#93c5fd; font-size:1rem; margin:0;">Craft targeted, high-converting InMails for candidate outreach — in seconds.</p>
+  </div>
+
+  <!-- Step 1: Role Details -->
+  <div class="card" style="margin-bottom:1.25rem; padding:1.5rem 2rem;">
+    <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1.25rem; padding-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.08);">
+      <div style="width:32px; height:32px; background:#3b82f6; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.875rem; color:white; flex-shrink:0;">1</div>
+      <h2 style="color:white; font-size:1.15rem; font-weight:600; margin:0;">Role Details</h2>
+    </div>
+
+    <!-- JD -->
+    <div style="margin-bottom:1.1rem;">
+      <label style="color:#93c5fd; font-size:0.8rem; font-weight:500; display:block; margin-bottom:0.5rem;">📄 Job Description <span style="color:#f87171;">*</span></label>
+      <textarea id="jd" class="input-field" rows="7" placeholder="Paste the full job description here..."></textarea>
+    </div>
+
+    <!-- Job URL -->
+    <div style="margin-bottom:1.1rem;">
+      <label style="color:#93c5fd; font-size:0.8rem; font-weight:500; display:block; margin-bottom:0.5rem;">🔗 Job URL <span style="color:#f87171;">*</span></label>
+      <input id="jobUrl" type="url" class="input-field" placeholder="https://careers.confluent.io/jobs/..." />
+    </div>
+
+    <!-- CTA -->
+    <div style="margin-bottom:1.1rem;">
+      <label style="color:#93c5fd; font-size:0.8rem; font-weight:500; display:block; margin-bottom:0.75rem;">👥 Call-to-Action Style <span style="color:#f87171;">*</span></label>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+        <button class="cta-btn active-cv" id="ctaCV" onclick="setCTA('cv')">
+          <div style="color:white; font-weight:600; font-size:0.875rem; margin-bottom:0.25rem;">📄 Direct CV Ask</div>
+          <div style="color:rgba(255,255,255,0.5); font-size:0.75rem;">Ask candidate to share their updated CV to discuss further.</div>
+        </button>
+        <button class="cta-btn" id="ctaCall" onclick="setCTA('call')">
+          <div style="color:white; font-weight:600; font-size:0.875rem; margin-bottom:0.25rem;">📞 Interest + Call</div>
+          <div style="color:rgba(255,255,255,0.5); font-size:0.75rem;">Gauge interest first and propose a quick introductory call.</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Follow-Up Count -->
+    <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:0.75rem; padding:1rem 1.25rem;">
+      <p style="color:white; font-weight:500; font-size:0.875rem; margin:0 0 0.25rem;">How many follow-up emails do you need?</p>
+      <p style="color:rgba(255,255,255,0.35); font-size:0.75rem; margin:0 0 0.85rem;">Each follow-up escalates gradually in directness</p>
+      <div style="display:flex; gap:0.75rem;">
+        <button class="count-btn active" id="fu1" onclick="setFollowUpCount(1)">1</button>
+        <button class="count-btn" id="fu2" onclick="setFollowUpCount(2)">2</button>
+        <button class="count-btn" id="fu3" onclick="setFollowUpCount(3)">3</button>
+      </div>
+      <p id="fuDesc" style="color:rgba(255,255,255,0.25); font-size:0.75rem; margin:0.6rem 0 0; text-align:center;">1 gentle follow-up</p>
+    </div>
+  </div>
+
+  <!-- Step 2: Sample InMails -->
+  <div class="card" style="margin-bottom:1.25rem; padding:1.5rem 2rem;">
+    <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem; padding-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.08);">
+      <div style="width:32px; height:32px; background:#6366f1; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.875rem; color:white; flex-shrink:0;">2</div>
+      <div>
+        <h2 style="color:white; font-size:1.15rem; font-weight:600; margin:0;">Your Sample InMails <span style="color:rgba(255,255,255,0.35); font-weight:400; font-size:0.875rem;">(Optional)</span></h2>
+        <p style="color:rgba(255,255,255,0.35); font-size:0.78rem; margin:0.2rem 0 0;">3 of your InMails are pre-loaded as style reference — add more to refine further</p>
+      </div>
+    </div>
+    <textarea id="sampleInMail" class="input-field" rows="5" placeholder="Your 3 sample InMails are pre-loaded as reference. Paste additional examples here to override or supplement them..."></textarea>
+  </div>
+
+  <!-- Generate Button -->
+  <button class="btn-primary" id="generateBtn" onclick="generate()">✨ Generate InMail Messages</button>
+
+  <!-- Error Box -->
+  <div id="errorBox" style="display:none; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); border-radius:0.75rem; padding:1rem 1.25rem; margin-top:1rem; color:#fca5a5; font-size:0.875rem;"></div>
+
+  <!-- Results -->
+  <div id="results" style="margin-top:1.5rem; display:none;">
+    <!-- Subject Lines -->
+    <div class="card" style="margin-bottom:1.25rem; padding:1.5rem 2rem;">
+      <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem; padding-bottom:0.75rem; border-bottom:1px solid rgba(255,255,255,0.08);">
+        <span style="font-size:1.1rem;">✨</span>
+        <h3 style="color:white; font-size:1rem; font-weight:600; margin:0; flex:1;">Creative Subject Line Options</h3>
+        <span style="color:rgba(255,255,255,0.3); font-size:0.72rem; background:rgba(255,255,255,0.07); padding:0.2rem 0.6rem; border-radius:9999px;">Pick your favourite</span>
+      </div>
+      <div id="subjLines"></div>
+    </div>
+    <!-- Message Cards -->
+    <div id="msgCards"></div>
+    <!-- Reset -->
+    <button onclick="resetAll()" style="width:100%; padding:0.85rem; border:1px solid rgba(255,255,255,0.2); background:transparent; color:rgba(255,255,255,0.5); border-radius:0.75rem; cursor:pointer; font-size:0.875rem; margin-top:0.5rem; transition:all 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">
+      🔄 Start Over
+    </button>
+  </div>
+
+</div>
+
+<script>
+const GEMINI_API_KEY = 'AIzaSyAfIhkebD7cKRsoHO7mIIy_pFnG3xLbA_g';
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+let cta = 'cv';
+let followUpCount = 1;
+let openSection = null;
+
+function setCTA(type) {
+  cta = type;
+  document.getElementById('ctaCV').className = 'cta-btn' + (type === 'cv' ? ' active-cv' : '');
+  document.getElementById('ctaCall').className = 'cta-btn' + (type === 'call' ? ' active-call' : '');
+}
+
+function setFollowUpCount(n) {
+  followUpCount = n;
+  [1,2,3].forEach(i => {
+    document.getElementById('fu'+i).className = 'count-btn' + (i === n ? ' active' : '');
+  });
+  const descs = { 1: '1 gentle follow-up', 2: '1 gentle + 1 more direct follow-up', 3: '1 gentle + 1 direct + 1 final nudge' };
+  document.getElementById('fuDesc').textContent = descs[n];
+}
+
+function copyText(text, btnId) {
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById(btnId);
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    btn.style.color = '#4ade80';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    const btn = document.getElementById(btnId);
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => { btn.textContent = '📋 Copy'; }, 2000);
+  });
+}
+
+function toggleSection(id) {
+  const wasOpen = openSection === id;
+  document.querySelectorAll('.msg-body').forEach(el => el.classList.remove('open'));
+  document.querySelectorAll('.chevron').forEach(el => el.textContent = '▼');
+  openSection = wasOpen ? null : id;
+  if (openSection) {
+    const body = document.getElementById('body-' + openSection);
+    const chev = document.getElementById('chev-' + openSection);
+    if (body) body.classList.add('open');
+    if (chev) chev.textContent = '▲';
+  }
+}
+
+function esc(str) {
+  return (str || '').replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+}
+
+function escHtml(str) {
+  return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function createMsgCard(id, icon, badge, badgeClass, title, subject, body) {
+  const safeSubject = esc(subject);
+  const safeBody = esc(body);
+  return `
+  <div class="msg-card">
+    <div class="msg-header" onclick="toggleSection('${id}')">
+      <span>${icon}</span>
+      <span style="color:white; font-weight:600; font-size:0.95rem; flex:1;">${title}</span>
+      <span class="badge ${badgeClass}">${badge}</span>
+      <span class="chevron" id="chev-${id}" style="color:rgba(255,255,255,0.3); margin-left:0.5rem; font-size:0.75rem;">▼</span>
+    </div>
+    <div class="msg-body" id="body-${id}">
+      <div class="section-inner" style="display:flex; align-items:flex-start; justify-content:space-between; gap:1rem;">
+        <div style="flex:1;">
+          <div style="color:rgba(255,255,255,0.35); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.25rem;">Suggested Subject</div>
+          <div style="color:rgba(255,255,255,0.9); font-size:0.875rem; font-weight:500;">"${escHtml(subject)}"</div>
+        </div>
+        <button class="copy-btn" id="copy-${id}-subj" onclick="copyText(\`${safeSubject}\`, 'copy-${id}-subj')">📋 Copy</button>
+      </div>
+      <div class="section-inner">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.75rem;">
+          <div style="color:rgba(255,255,255,0.35); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.05em;">Message Body</div>
+          <button class="copy-btn" id="copy-${id}-body" onclick="copyText(\`${safeBody}\`, 'copy-${id}-body')">📋 Copy</button>
+        </div>
+        <pre style="color:rgba(255,255,255,0.8); font-size:0.85rem; line-height:1.7; margin:0;">${escHtml(body)}</pre>
+      </div>
+    </div>
+  </div>`;
+}
+
+async function generate() {
+  const jd = document.getElementById('jd').value.trim();
+  const jobUrl = document.getElementById('jobUrl').value.trim();
+  const sampleInMail = document.getElementById('sampleInMail').value.trim();
+
+  document.getElementById('errorBox').style.display = 'none';
+
+  if (!jd) { showError('Please paste the Job Description.'); return; }
+  if (!jobUrl) { showError('Please enter the Job URL.'); return; }
+
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Crafting your InMails...';
+  document.getElementById('results').style.display = 'none';
+
+  const ctaInstruction = cta === 'cv'
+    ? 'End the outreach by asking for their updated CV to discuss further details.'
+    : 'End the outreach by checking their interest and proposing a short call.';
+
+  const defaultSamples = `Sample 1:
+Hi {firstName},
+I'm Vikash from the Talent Sourcing team at Confluent, and I hope you're doing well.
+I'm currently hiring for a Staff Security Engineer II role at Confluent (Remote – India), focused on shaping application security architecture across large-scale distributed systems and cloud platforms.
+Here is the job link: https://careers.confluent.io/jobs/...
+If this aligns with your experience or interests, please feel free to share your CV, and we can discuss further.
+Looking forward to hearing from you.
+Regards
+
+Sample 2:
+Hi {firstName},
+I'm the Lead Talent Sourcer for Technical Management positions across EMEA here at Confluent. I hope you're doing well.
+We're building the next-generation cloud network data plane to scale our Confluent Cloud platform. We're looking for a Staff Software Engineer with strong expertise in distributed systems, networking, and large-scale cloud systems.
+Role details: [Job Link] — Full-time permanent role (no B2B).
+Let me know if this sounds interesting — I'd be happy to connect and share more details.
+Best Regards
+
+Sample 3:
+Hi {firstName},
+I'm Vikash Chauhan from the Talent Sourcing team at Confluent, and I'm reaching out with an exciting opportunity.
+Our Stream Processing & Analytics team is building the next-generation Apache Flink–based stream processing engine to power Confluent Cloud.
+We are hiring a Staff Engineer to define and execute the long-term vision for a truly cloud-native data stream processor.
+[Job Link] — Job location: Germany
+Would you be open to discussing this opportunity?
+Best Regards`;
+
+  const sampleSection = sampleInMail
+    ? `Here are sample InMails I have previously written — match my tone and style but improve them:\n"""\n${sampleInMail}\n"""\n`
+    : `Here are sample InMails I have previously written — match my tone and style but improve them:\n"""\n${defaultSamples}\n"""\n`;
+
+  const fu2Schema = followUpCount >= 2 ? `,"followUp2":{"subject":"string","body":"string"}` : '';
+  const fu3Schema = followUpCount >= 3 ? `,"followUp3":{"subject":"string","body":"string"}` : '';
+
+  const fuRules = followUpCount === 1
+    ? '- Generate 1 follow-up ("followUp"): 50–80 words, warm, courteous, includes job URL.'
+    : followUpCount === 2
+    ? '- Generate 2 follow-ups: followUp (50–80 words, warm, includes job URL) and followUp2 (50–70 words, slightly more direct, includes job URL).'
+    : '- Generate 3 follow-ups: followUp (50–80 words, warm, includes job URL), followUp2 (50–70 words, more direct, includes job URL), followUp3 (40–60 words, polite final nudge, last attempt, includes job URL).';
+
+  const prompt = `You are an expert LinkedIn recruiter and copywriter. Generate InMail messages for a recruiter at Confluent reaching out to a targeted candidate.
+
+Job Description:
+"""
+${jd}
+"""
+
+Job URL: ${jobUrl}
+
+CTA Instruction: ${ctaInstruction}
+
+${sampleSection}
+
+Return ONLY a valid JSON object. No markdown. No backticks. No explanation. Exact structure:
+{"subjectLines":["string","string","string","string"],"outreach":{"subject":"string","body":"string"},"followUp":{"subject":"string","body":"string"}${fu2Schema}${fu3Schema}}
+
+Rules:
+- outreach: 120–180 words, warm, personalized, includes job URL naturally, follows CTA instruction.
+${fuRules}
+- All 4 subject lines + every message subject MUST include the word "Confluent" and the job location extracted from the JD (e.g. "Remote – India", "Germany", "Remote"). Creative, under 12 words.
+- Never use [Name] or {firstName} — use "Hi there," or "Hello,".
+- Return ONLY the raw JSON. Nothing else.`;
+
+  try {
+    const res = await fetch(GEMINI_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.8, maxOutputTokens: 2000 }
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+
+    const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const clean = raw.replace(/```json|```/gi, '').trim();
+    const result = JSON.parse(clean);
+
+    // Render subject lines
+    document.getElementById('subjLines').innerHTML = (result.subjectLines || []).map((s, i) => `
+      <div class="subj-card">
+        <span style="color:rgba(255,255,255,0.88); font-size:0.875rem; flex:1;">"${escHtml(s)}"</span>
+        <button class="copy-btn" id="copy-sub-${i}" onclick="copyText(\`${esc(s)}\`, 'copy-sub-${i}')">📋 Copy</button>
+      </div>`).join('');
+
+    // Render message cards
+    let cards = '';
+    cards += createMsgCard('outreach', '📤', 'Outreach', 'badge-blue', 'First Outreach InMail', result.outreach?.subject, result.outreach?.body);
+    cards += createMsgCard('followup', '💬', 'Follow-Up 1', 'badge-indigo', '1st Follow-Up InMail', result.followUp?.subject, result.followUp?.body);
+    if (result.followUp2) cards += createMsgCard('followup2', '💬', 'Follow-Up 2', 'badge-purple', '2nd Follow-Up InMail', result.followUp2.subject, result.followUp2.body);
+    if (result.followUp3) cards += createMsgCard('followup3', '💬', 'Follow-Up 3', 'badge-pink', '3rd Follow-Up InMail', result.followUp3.subject, result.followUp3.body);
+    document.getElementById('msgCards').innerHTML = cards;
+
+    document.getElementById('results').style.display = 'block';
+    setTimeout(() => document.getElementById('results').scrollIntoView({ behavior: 'smooth' }), 100);
+    toggleSection('outreach');
+
+  } catch (err) {
+    showError('Something went wrong: ' + err.message + '. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '✨ Generate InMail Messages';
+  }
+}
+
+function showError(msg) {
+  const box = document.getElementById('errorBox');
+  box.textContent = '⚠️ ' + msg;
+  box.style.display = 'block';
+}
+
+function resetAll() {
+  document.getElementById('jd').value = '';
+  document.getElementById('jobUrl').value = '';
+  document.getElementById('sampleInMail').value = '';
+  setCTA('cv');
+  setFollowUpCount(1);
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('errorBox').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
