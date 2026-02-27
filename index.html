@@ -252,8 +252,25 @@ async function generate() {
   if (!jd)     { showError('Please paste the Job Description.'); return; }
   if (!jobUrl) { showError('Please enter the Job URL.'); return; }
 
-  // Read state at time of click
-  const currentCTA = state.cta;
+  // Extract company name from JD first using a separate quick call
+  let companyName = 'the company';
+  try {
+    const companyRes = await fetch(GROQ_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_KEY}` },
+      body: JSON.stringify({
+        model: MODEL,
+        messages: [{ role: 'user', content: `Read this job description and reply with ONLY the hiring company name — nothing else, no explanation, just the company name:\n\n${jd}` }],
+        temperature: 0,
+        max_tokens: 20
+      })
+    });
+    const companyData = await companyRes.json();
+    const extracted = companyData.choices?.[0]?.message?.content?.trim();
+    if (extracted && extracted.length < 60) companyName = extracted;
+  } catch(e) { console.log('Company extraction failed, using default'); }
+
+  console.log('Extracted company name:', companyName);
   const currentFU  = state.fuCount;
   console.log('Generating with CTA:', currentCTA, 'FU count:', currentFU);
 
