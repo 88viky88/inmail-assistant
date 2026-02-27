@@ -335,8 +335,13 @@ SUBJECT LINE RULES:
 
 OUTREACH BODY RULES:
 - Length: 120-150 words maximum. Concise, warm, punchy — optimized for LinkedIn InMail where shorter messages get higher response rates
-- Line 1: ALWAYS start with exactly "Hi {firstName}," on its own line
-- Line 2: ALWAYS second line: make it warm and engaging, something like "I'm Vikash from the Talent Sourcing team at Confluent — I hope you're having a great week!" or "I'm Vikash, part of the Talent Sourcing team at Confluent, and I'm reaching out with something I think could genuinely excite you!" — vary it but always mention Vikash + Confluent Talent Sourcing team
+- FORMATTING IS CRITICAL: Every single paragraph/line must be separated by \\n\\n (a blank line between each). Follow this exact structure with blank lines between every part:
+
+"Hi {firstName},\\n\\nI'm Vikash, part of the Talent Sourcing team at Confluent, and I'm reaching out with something I think could genuinely excite you!\\n\\n[Team/role context paragraph]\\n\\n[Role impact + role title + location (Remote) mention]\\n\\nYou can explore the full details here: [URL]\\n\\n[CTA line]\\n\\nBest regards,\\nVikash"
+- Always start with "Hi {firstName},\\n\\n"
+- Always second line: warm Vikash intro e.g. "I'm Vikash, part of the Talent Sourcing team at Confluent, and I'm reaching out with something I think could genuinely excite you!"
+- Then \\n\\n before every new paragraph
+- End with "\\n\\nBest regards,\\nVikash" or "\\n\\nWarm regards,\\nVikash"
 - Paragraph 2: What the team is building — exciting, meaningful, include technical context from JD
 - Paragraph 3: What makes this role special — impact, scale, tech stack, team mission. End this paragraph with a natural mention of the role like "...and we'd love to have someone like you join us as our next [Role Title] based [Location (Remote)]."
 - Paragraph 4: Job URL line — e.g. "You can explore the full details here: [URL]"
@@ -345,12 +350,12 @@ OUTREACH BODY RULES:
 
 FOLLOW-UP BODY RULES:
 - Must follow the follow-up instruction above exactly
-- Always start with "Hi {firstName},"
-- Include a brief reference to the previous outreach (e.g. "I wanted to follow up on my previous message about the [Role Title] opportunity at Confluent")
-- Add more context about the role or team — don't just say "just checking in", give them a reason to respond
-- Include the job URL naturally
-- End with "Best regards," or "Warm regards," followed by "Vikash"
-- Use \\n\\n between paragraphs`;
+- Always start with "Hi {firstName},\\n\\n"
+- Brief reference to previous outreach
+- Add role/team context — give them a reason to respond
+- Include job URL naturally
+- End with "\\n\\nBest regards,\\nVikash"
+- Separate every paragraph with \\n\\n`;
 
   try {
     const res = await fetch(GROQ_URL, {
