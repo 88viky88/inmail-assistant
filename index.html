@@ -48,62 +48,12 @@
   pre { white-space: pre-wrap; font-family: 'Segoe UI', sans-serif; color: rgba(255,255,255,0.8); font-size: 0.85rem; line-height: 1.7; }
   .reset-btn { width: 100%; padding: 0.85rem; border: 1px solid rgba(255,255,255,0.2); background: transparent; color: rgba(255,255,255,0.5); border-radius: 0.75rem; cursor: pointer; font-size: 0.875rem; margin-top: 0.5rem; transition: all 0.2s; }
   .reset-btn:hover { color: white; border-color: rgba(255,255,255,0.4); }
-  /* Lock Screen */
-  #lockScreen { position: fixed; inset: 0; background: linear-gradient(135deg, #0f172a, #1e3a5f, #1e1b4b); display: flex; align-items: center; justify-content: center; z-index: 999; padding: 1rem; }
-  .lock-card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 1.25rem; padding: 2.5rem; width: 100%; max-width: 440px; }
-  .lock-icon { width: 60px; height: 60px; background: linear-gradient(135deg,#3b82f6,#6366f1); border-radius: 1rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; }
-  .lock-title { font-size: 1.4rem; font-weight: 700; text-align: center; margin-bottom: 0.3rem; }
-  .lock-sub { color: #93c5fd; font-size: 0.875rem; text-align: center; margin-bottom: 1.75rem; }
-  .lock-label { color: rgba(255,255,255,0.5); font-size: 0.78rem; font-weight: 500; margin-bottom: 0.4rem; display: block; }
-  .lock-input-wrap { position: relative; margin-bottom: 1rem; }
-  .lock-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.2); border-radius: 0.75rem; color: white; padding: 0.85rem 3rem 0.85rem 1rem; width: 100%; font-size: 0.9rem; outline: none; transition: border-color 0.2s; font-family: 'Segoe UI', sans-serif; }
-  .lock-input::placeholder { color: rgba(255,255,255,0.25); }
-  .lock-input:focus { border-color: #60a5fa; }
-  .show-btn { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(255,255,255,0.35); cursor: pointer; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.05em; }
-  .lock-btn { background: linear-gradient(135deg,#3b82f6,#6366f1); color: white; border: none; border-radius: 0.75rem; padding: 0.9rem; width: 100%; font-size: 1rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s; margin-top: 0.5rem; }
-  .lock-btn:hover { opacity: 0.9; }
-  .lock-error { color: #fca5a5; font-size: 0.8rem; margin-top: 0.6rem; text-align: center; display: none; }
-  .lock-hint { color: rgba(255,255,255,0.2); font-size: 0.72rem; text-align: center; margin-top: 1rem; }
-  .divider { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 1.25rem 0; }
-  .key-info { background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.2); border-radius: 0.65rem; padding: 0.65rem 0.85rem; font-size: 0.75rem; color: rgba(255,255,255,0.45); margin-bottom: 1rem; line-height: 1.5; }
 </style>
 </head>
 <body>
 
-<!-- Lock Screen -->
-<div id="lockScreen">
-  <div class="lock-card">
-    <div class="lock-icon">
-      <svg width="28" height="28" fill="white" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-    </div>
-    <div class="lock-title">InMail Assistant</div>
-    <div class="lock-sub">Confluent Talent Sourcing Team</div>
-
-    <!-- Password -->
-    <span class="lock-label">🔒 Access Password</span>
-    <div class="lock-input-wrap">
-      <input class="lock-input" id="lockPass" type="password" placeholder="Enter access password" onkeydown="if(event.key==='Enter')document.getElementById('lockApiKey').focus()" />
-      <button class="show-btn" onclick="toggleVis('lockPass',this)">SHOW</button>
-    </div>
-
-    <hr class="divider" />
-
-    <!-- API Key -->
-    <span class="lock-label">🗝️ Your OpenRouter API Key</span>
-    <div class="key-info">Your key is used only to call the AI API. It stays in your browser memory and is never saved or shared anywhere.</div>
-    <div class="lock-input-wrap">
-      <input class="lock-input" id="lockApiKey" type="password" placeholder="sk-or-v1-..." onkeydown="if(event.key==='Enter')unlock()" />
-      <button class="show-btn" onclick="toggleVis('lockApiKey',this)">SHOW</button>
-    </div>
-
-    <button class="lock-btn" onclick="unlock()">🔓 Enter Tool</button>
-    <div class="lock-error" id="lockError"></div>
-    <div class="lock-hint">Contact Vikash Chauhan for access · <a href="https://openrouter.ai/keys" target="_blank" style="color:rgba(96,165,250,0.6);">Get free API key</a></div>
-  </div>
-</div>
-
-<!-- Main App -->
-<div class="wrap" id="mainApp" style="display:none;">
+<div class="wrap">
+  <!-- Header -->
   <div style="text-align:center; margin-bottom:2rem;">
     <div style="display:inline-flex; align-items:center; justify-content:center; width:64px; height:64px; background:linear-gradient(135deg,#3b82f6,#6366f1); border-radius:1rem; margin-bottom:1.25rem; box-shadow:0 4px 20px rgba(99,102,241,0.4);">
       <svg width="30" height="30" fill="white" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
@@ -182,37 +132,11 @@
 </div>
 
 <script>
-const ACCESS_PASSWORD = 'Confluent@2025';
-const OR_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const MODEL  = 'openrouter/auto';
-let OR_KEY = '';
+const GROQ_KEY = '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';
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const MODEL    = 'llama-3.3-70b-versatile';
+
 let cta = 'cv', fuCount = 1, openSection = null;
-
-function toggleVis(id, btn) {
-  const el = document.getElementById(id);
-  if (el.type === 'password') { el.type = 'text'; btn.textContent = 'HIDE'; }
-  else { el.type = 'password'; btn.textContent = 'SHOW'; }
-}
-
-function unlock() {
-  const pass = document.getElementById('lockPass').value.trim();
-  const key  = document.getElementById('lockApiKey').value.trim();
-  const err  = document.getElementById('lockError');
-  if (pass !== ACCESS_PASSWORD) {
-    err.textContent = '❌ Incorrect password. Please try again.';
-    err.style.display = 'block';
-    document.getElementById('lockPass').value = '';
-    return;
-  }
-  if (!key || !key.startsWith('sk-or-')) {
-    err.textContent = '❌ Please enter a valid OpenRouter API key (starts with sk-or-).';
-    err.style.display = 'block';
-    return;
-  }
-  OR_KEY = key;
-  document.getElementById('lockScreen').style.display = 'none';
-  document.getElementById('mainApp').style.display = 'block';
-}
 
 function setCTA(t) {
   cta = t;
@@ -314,7 +238,7 @@ Let me know if this sounds interesting — I'd be happy to connect and share mor
 
 Sample 3:
 Hi {firstName}, I'm Vikash Chauhan from Confluent's Talent Sourcing team.
-Our Stream Processing & Analytics team is building the next-generation Apache Flink–based stream processing engine to power Confluent Cloud.
+Our Stream Processing & Analytics team is building the next-generation Apache Flink-based stream processing engine to power Confluent Cloud.
 We are hiring a Staff Engineer to define the long-term vision for a truly cloud-native data stream processor.
 [Job Link] — Germany. Would you be open to discussing this? Best Regards`;
 
@@ -325,10 +249,10 @@ We are hiring a Staff Engineer to define the long-term vision for a truly cloud-
   const fu2s = fuCount>=2?`,"followUp2":{"subject":"string","body":"string"}`:'';
   const fu3s = fuCount>=3?`,"followUp3":{"subject":"string","body":"string"}`:'';
   const fuRule = fuCount===1
-    ? '- 1 follow-up "followUp": 50–80 words, warm, includes job URL.'
+    ? '- 1 follow-up "followUp": 50-80 words, warm, includes job URL.'
     : fuCount===2
-    ? '- followUp (50–80w, warm, job URL) and followUp2 (50–70w, more direct, job URL).'
-    : '- followUp (50–80w, warm, job URL), followUp2 (50–70w, direct, job URL), followUp3 (40–60w, final polite nudge, job URL).';
+    ? '- followUp (50-80w, warm, job URL) and followUp2 (50-70w, more direct, job URL).'
+    : '- followUp (50-80w, warm, job URL), followUp2 (50-70w, direct, job URL), followUp3 (40-60w, final polite nudge, job URL).';
 
   const prompt = `You are an expert LinkedIn recruiter copywriter for Confluent. Generate InMail messages to reach a targeted candidate.
 
@@ -344,16 +268,16 @@ Return ONLY a raw JSON object (no markdown, no backticks, no explanation):
 {"subjectLines":["s1","s2","s3","s4"],"outreach":{"subject":"string","body":"string"},"followUp":{"subject":"string","body":"string"}${fu2s}${fu3s}}
 
 Rules:
-- outreach: 120–180 words, warm, personalized, job URL embedded naturally, follows CTA.
+- outreach: 120-180 words, warm, personalized, job URL embedded naturally, follows CTA.
 ${fuRule}
 - Every subject line MUST include "Confluent" and the job location from the JD. Creative, under 12 words.
 - Never use [Name] or {firstName} — use "Hi there," or "Hello,".
 - Return ONLY the JSON. Nothing else before or after.`;
 
   try {
-    const res = await fetch(OR_URL, {
+    const res = await fetch(GROQ_URL, {
       method: 'POST',
-      headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${OR_KEY}` },
+      headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${GROQ_KEY}` },
       body: JSON.stringify({ model: MODEL, messages:[{role:'user',content:prompt}], temperature:0.8, max_tokens:2000 })
     });
     const data = await res.json();
