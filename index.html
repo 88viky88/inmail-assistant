@@ -254,7 +254,7 @@ We are hiring a Staff Engineer to define the long-term vision for a truly cloud-
     ? '- followUp (50-80w, warm, job URL) and followUp2 (50-70w, more direct, job URL).'
     : '- followUp (50-80w, warm, job URL), followUp2 (50-70w, direct, job URL), followUp3 (40-60w, final polite nudge, job URL).';
 
-  const prompt = `You are an expert LinkedIn recruiter copywriter for Confluent. Generate InMail messages to reach a targeted candidate.
+  const prompt = `You are an expert LinkedIn recruiter and copywriter working for Confluent's Talent Sourcing team. Your job is to write compelling, human, personalized InMail messages that feel like they were written by a real recruiter — not a bot.
 
 Job Description:
 """
@@ -267,12 +267,32 @@ ${sampleBlock}
 Return ONLY a raw JSON object (no markdown, no backticks, no explanation):
 {"subjectLines":["s1","s2","s3","s4"],"outreach":{"subject":"string","body":"string"},"followUp":{"subject":"string","body":"string"}${fu2s}${fu3s}}
 
-Rules:
-- outreach: 120-180 words, warm, personalized, job URL embedded naturally, follows CTA.
+SUBJECT LINE RULES (very important):
+- Must feel curiosity-driven and human — NOT like a job title copy-paste
+- Must mention "Confluent" naturally AND the job location (e.g. "Remote, India" or "Germany")
+- Use creative angles like: excitement, opportunity, team mission, impact, exclusivity
+- Good examples: "An exciting opportunity with Confluent – Remote, India", "Could this be your next big move? | Confluent, Remote", "Confluent is hiring — and we thought of you | Remote, India"
+- Bad examples (never do this): "Confluent India Staff Security Engineer", "Confluent Remote India Security Role"
+- Max 12 words, no ALL CAPS, no generic job title dumps
+
+OUTREACH MESSAGE RULES (very important):
+- Length: 150-200 words minimum. Must feel rich, warm and well-structured
+- Structure it exactly like this with line breaks:
+  Line 1: Warm greeting + who you are + your role at Confluent
+  Line 2-3: What the team is building — make it sound exciting and meaningful. Include technical context from the JD.
+  Line 4-5: What makes this role special — impact, scale, tech stack, team mission
+  Line 6: Job URL embedded naturally (e.g. "You can find more details here: [URL]")
+  Line 7: CTA line — either ask for CV or propose a call based on instruction
+  Line 8: Warm sign-off
+- Never use [Name] or {firstName} — start with "Hi there," or "Hello,"
+- Write like a real human recruiter — warm, genuine, enthusiastic but professional
+
+FOLLOW-UP RULES:
 ${fuRule}
-- Every subject line MUST include "Confluent" and the job location from the JD. Creative, under 12 words.
-- Never use [Name] or {firstName} — use "Hi there," or "Hello,".
-- Return ONLY the JSON. Nothing else before or after.`;
+- Follow-ups must also include the job URL naturally
+- Keep them short but warm — reference the previous outreach briefly
+
+Return ONLY the JSON. Nothing else before or after.`;
 
   try {
     const res = await fetch(GROQ_URL, {
