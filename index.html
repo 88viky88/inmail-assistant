@@ -220,9 +220,9 @@ async function generate() {
   btn.innerHTML = '<span class="spinner"></span> Crafting your InMails...';
   document.getElementById('results').style.display = 'none';
 
-  const ctaText = cta==='cv'
-    ? 'End the outreach by asking for their updated CV to discuss further details.'
-    : 'End the outreach by checking their interest and proposing a short call.';
+  const ctaText = cta === 'cv'
+    ? 'End the outreach message by directly asking the candidate to share their updated CV so you can discuss further details.'
+    : 'End the outreach message by checking if the candidate is open to this opportunity and proposing a short 15-minute introductory call to discuss further.';
 
   const defaultSamples = `Sample 1:
 Hi {firstName}, I'm Vikash from the Talent Sourcing team at Confluent, and I hope you're doing well.
@@ -246,13 +246,13 @@ We are hiring a Staff Engineer to define the long-term vision for a truly cloud-
     ? `Here are sample InMails I have previously written — match my tone and style but improve them:\n"""\n${sample}\n"""\n`
     : `Here are sample InMails I have previously written — match my tone and style but improve them:\n"""\n${defaultSamples}\n"""\n`;
 
-  const fu2s = fuCount>=2?`,"followUp2":{"subject":"string","body":"string"}`:'';
-  const fu3s = fuCount>=3?`,"followUp3":{"subject":"string","body":"string"}`:'';
+  const fu2s = fuCount>=2 ? `,"followUp2":{"subject":"string","body":"string"}` : '';
+  const fu3s = fuCount>=3 ? `,"followUp3":{"subject":"string","body":"string"}` : '';
   const fuRule = fuCount===1
-    ? '- 1 follow-up "followUp": 50-80 words, warm, includes job URL.'
+    ? `- Generate ONLY 1 follow-up with key "followUp": 50-80 words, warm and courteous, includes job URL naturally. DO NOT generate followUp2 or followUp3.`
     : fuCount===2
-    ? '- followUp (50-80w, warm, job URL) and followUp2 (50-70w, more direct, job URL).'
-    : '- followUp (50-80w, warm, job URL), followUp2 (50-70w, direct, job URL), followUp3 (40-60w, final polite nudge, job URL).';
+    ? `- Generate exactly 2 follow-ups: "followUp" (50-80 words, warm, includes job URL) AND "followUp2" (50-70 words, slightly more direct, includes job URL). DO NOT generate followUp3.`
+    : `- Generate exactly 3 follow-ups: "followUp" (50-80 words, warm, includes job URL), "followUp2" (50-70 words, more direct, includes job URL), AND "followUp3" (40-60 words, final polite nudge, last attempt, includes job URL).`;
 
   const prompt = `You are an expert LinkedIn recruiter and copywriter working for Confluent's Talent Sourcing team. Your job is to write compelling, human, personalized InMail messages that feel like they were written by a real recruiter — not a bot.
 
