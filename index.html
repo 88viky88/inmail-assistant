@@ -266,9 +266,13 @@ async function generate() {
       })
     });
     const companyData = await companyRes.json();
+    if (companyData.error) throw new Error('Company extraction: ' + companyData.error.message);
     const extracted = companyData.choices?.[0]?.message?.content?.trim();
     if (extracted && extracted.length < 60) companyName = extracted;
-  } catch(e) { console.log('Company extraction failed, using default'); }
+    console.log('Company extracted:', companyName);
+  } catch(e) {
+    console.log('Company extraction failed:', e.message);
+  }
 
   console.log('Extracted company name:', companyName);
   const currentFU  = state.fuCount;
@@ -426,8 +430,8 @@ FOLLOW-UP BODY RULES:
     toggleSection('outreach');
 
   } catch(err) {
-    console.error('Error:', err);
-    showError('Something went wrong: ' + err.message + '<br>Please try again.');
+    console.error('Full error:', err);
+    showError('Something went wrong: ' + err.message + '<br>Please check the browser console (Cmd+Option+J) for details and try again.');
   } finally {
     btn.disabled = false;
     btn.innerHTML = '✨ Generate InMail Messages';
