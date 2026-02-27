@@ -292,7 +292,11 @@ ${fuRule}
 - Follow-ups must also include the job URL naturally
 - Keep them short but warm — reference the previous outreach briefly
 
-Return ONLY the JSON. Nothing else before or after.`;
+CRITICAL JSON RULES:
+- Return ONLY a valid raw JSON object
+- Inside JSON string values, use \\n for line breaks — never raw line breaks
+- No markdown, no backticks, no text before or after the JSON
+- Escape all special characters properly inside JSON strings
 
   try {
     const res = await fetch(GROQ_URL, {
@@ -303,8 +307,26 @@ Return ONLY the JSON. Nothing else before or after.`;
     const data = await res.json();
     if (data.error) throw new Error(data.error.message);
     const raw = data.choices?.[0]?.message?.content || '';
-    const clean = raw.replace(/```json|```/gi,'').trim();
-    const r = JSON.parse(clean);
+    const clean = raw
+      .replace(/```json|```/gi, '')
+      .replace(/[\u0000-\u001F\u007F]/g, m => {
+        if (m === '\n') return '\\n';
+        if (m === '\r') return '\\r';
+        if (m === '\t') return '\\t';
+        return '';
+      })
+      .trim();
+    let r;
+    try {
+      r = JSON.parse(clean);
+    } catch(e) {
+      // Try extracting JSON between first { and last }
+      const start = clean.indexOf('{');
+      const end = clean.lastIndexOf('}');
+      if (start !== -1 && end !== -1) {
+        r = JSON.parse(clean.slice(start, end + 1));
+      } else throw e;
+    }
 
     document.getElementById('subjLines').innerHTML = (r.subjectLines||[]).map((s,i)=>
       `<div class="subj-card"><span style="color:rgba(255,255,255,0.88);font-size:0.875rem;flex:1;">"${escH(s)}"</span><button class="copy-btn" id="cs${i}" onclick="copyText(\`${esc(s)}\`,'cs${i}')">📋 Copy</button></div>`
