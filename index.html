@@ -21,15 +21,15 @@
   .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
   .cta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
   .cta-btn { border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); border-radius: 0.75rem; padding: 1rem; cursor: pointer; text-align: left; transition: all 0.2s; width: 100%; color: white; }
-  .cta-btn.active-cv { border-color: #60a5fa; background: rgba(96,165,250,0.12); }
-  .cta-btn.active-call { border-color: #818cf8; background: rgba(129,140,248,0.12); }
+  .cta-btn.active-cv { border-color: #60a5fa; background: rgba(96,165,250,0.15); }
+  .cta-btn.active-call { border-color: #a78bfa; background: rgba(167,139,250,0.15); }
   .fu-box { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 1rem 1.25rem; }
   .fu-btns { display: flex; gap: 0.75rem; margin: 0.85rem 0 0.6rem; }
   .count-btn { border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.5); border-radius: 0.75rem; padding: 0.65rem; font-size: 1.25rem; font-weight: 700; cursor: pointer; transition: all 0.2s; flex: 1; }
   .count-btn.active { border-color: #60a5fa; background: rgba(96,165,250,0.15); color: #93c5fd; }
   .spinner { border: 3px solid rgba(255,255,255,0.2); border-top-color: #60a5fa; border-radius: 50%; width: 20px; height: 20px; animation: spin 0.8s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .error-box { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); border-radius: 0.75rem; padding: 1rem 1.25rem; margin-top: 1rem; color: #fca5a5; font-size: 0.85rem; display: none; }
+  .error-box { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); border-radius: 0.75rem; padding: 1rem 1.25rem; margin-top: 1rem; color: #fca5a5; font-size: 0.85rem; display: none; line-height: 1.5; }
   .subj-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; gap: 1rem; }
   .copy-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.6); border-radius: 0.5rem; padding: 0.3rem 0.7rem; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
   .copy-btn:hover { background: rgba(255,255,255,0.15); color: white; }
@@ -45,14 +45,17 @@
   .badge-purple { background: rgba(168,85,247,0.15); color: #d8b4fe; border-color: rgba(168,85,247,0.3); }
   .badge-pink   { background: rgba(236,72,153,0.15); color: #f9a8d4; border-color: rgba(236,72,153,0.3); }
   .micro-label { color: rgba(255,255,255,0.35); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
-  pre { white-space: pre-wrap; font-family: 'Segoe UI', sans-serif; color: rgba(255,255,255,0.8); font-size: 0.85rem; line-height: 1.7; }
+  pre { white-space: pre-wrap; font-family: 'Segoe UI', sans-serif; color: rgba(255,255,255,0.82); font-size: 0.875rem; line-height: 1.8; }
   .reset-btn { width: 100%; padding: 0.85rem; border: 1px solid rgba(255,255,255,0.2); background: transparent; color: rgba(255,255,255,0.5); border-radius: 0.75rem; cursor: pointer; font-size: 0.875rem; margin-top: 0.5rem; transition: all 0.2s; }
   .reset-btn:hover { color: white; border-color: rgba(255,255,255,0.4); }
+  .state-indicator { font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 9999px; margin-left: 0.5rem; }
+  .state-cv { background: rgba(96,165,250,0.2); color: #93c5fd; }
+  .state-call { background: rgba(167,139,250,0.2); color: #c4b5fd; }
 </style>
 </head>
 <body>
-
 <div class="wrap">
+
   <!-- Header -->
   <div style="text-align:center; margin-bottom:2rem;">
     <div style="display:inline-flex; align-items:center; justify-content:center; width:64px; height:64px; background:linear-gradient(135deg,#3b82f6,#6366f1); border-radius:1rem; margin-bottom:1.25rem; box-shadow:0 4px 20px rgba(99,102,241,0.4);">
@@ -68,36 +71,44 @@
       <div class="step-num" style="background:#3b82f6;">1</div>
       <h2 style="font-size:1.15rem; font-weight:600;">Role Details</h2>
     </div>
+
     <div class="field-wrap">
       <label>📄 Job Description <span style="color:#f87171;">*</span></label>
       <textarea id="jd" class="input-field" rows="7" placeholder="Paste the full job description here..."></textarea>
     </div>
+
     <div class="field-wrap">
       <label>🔗 Job URL <span style="color:#f87171;">*</span></label>
       <input id="jobUrl" type="url" class="input-field" placeholder="https://careers.confluent.io/jobs/..." />
     </div>
+
     <div class="field-wrap">
-      <label>👥 Call-to-Action Style <span style="color:#f87171;">*</span></label>
+      <label>👥 Call-to-Action Style <span style="color:#f87171;">*</span>
+        <span id="ctaIndicator" class="state-indicator state-cv">CV Ask selected</span>
+      </label>
       <div class="cta-grid">
-        <button class="cta-btn active-cv" id="ctaCV" onclick="setCTA('cv')">
+        <button id="btnCV" class="cta-btn active-cv" onclick="setCTA('cv')">
           <div style="font-weight:600;font-size:0.875rem;margin-bottom:0.25rem;">📄 Direct CV Ask</div>
-          <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;">Ask candidate to share their updated CV to discuss further.</div>
+          <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;">End message by asking candidate to share their updated CV.</div>
         </button>
-        <button class="cta-btn" id="ctaCall" onclick="setCTA('call')">
+        <button id="btnCall" class="cta-btn" onclick="setCTA('call')">
           <div style="font-weight:600;font-size:0.875rem;margin-bottom:0.25rem;">📞 Interest + Call</div>
-          <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;">Gauge interest first and propose a quick introductory call.</div>
+          <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;">End message by gauging interest and proposing a quick call.</div>
         </button>
       </div>
     </div>
+
     <div class="fu-box">
-      <p style="font-weight:500;font-size:0.875rem;">How many follow-up emails do you need?</p>
+      <p style="font-weight:500;font-size:0.875rem;">How many follow-up emails do you need?
+        <span id="fuIndicator" style="font-size:0.7rem; color:#93c5fd; margin-left:0.5rem;">1 selected</span>
+      </p>
       <p style="color:rgba(255,255,255,0.35);font-size:0.75rem;margin-top:0.2rem;">Each follow-up escalates gradually in directness</p>
       <div class="fu-btns">
-        <button class="count-btn active" id="fu1" onclick="setFU(1)">1</button>
-        <button class="count-btn" id="fu2" onclick="setFU(2)">2</button>
-        <button class="count-btn" id="fu3" onclick="setFU(3)">3</button>
+        <button id="fuBtn1" class="count-btn active" onclick="setFU(1)">1</button>
+        <button id="fuBtn2" class="count-btn" onclick="setFU(2)">2</button>
+        <button id="fuBtn3" class="count-btn" onclick="setFU(3)">3</button>
       </div>
-      <p style="color:rgba(255,255,255,0.25);font-size:0.75rem;text-align:center;" id="fuDesc">1 gentle follow-up</p>
+      <p id="fuDesc" style="color:rgba(255,255,255,0.25);font-size:0.75rem;text-align:center;">1 gentle follow-up</p>
     </div>
   </div>
 
@@ -110,7 +121,13 @@
         <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;margin-top:0.2rem;">3 of your InMails are pre-loaded as style reference — add more to refine further</p>
       </div>
     </div>
-    <textarea id="sampleInMail" class="input-field" rows="5" placeholder="Your 3 sample InMails are pre-loaded as reference. Paste additional examples here to override or supplement them..."></textarea>
+    <textarea id="sampleInMail" class="input-field" rows="5" placeholder="Your 3 sample InMails are pre-loaded as reference. Paste additional examples here to supplement them..."></textarea>
+  </div>
+
+  <!-- Debug indicator -->
+  <div id="debugBar" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:0.75rem;padding:0.6rem 1rem;margin-bottom:1rem;font-size:0.75rem;color:rgba(255,255,255,0.4);display:flex;gap:1.5rem;">
+    <span>CTA: <strong id="dbCTA" style="color:#93c5fd;">CV Ask</strong></span>
+    <span>Follow-ups: <strong id="dbFU" style="color:#93c5fd;">1</strong></span>
   </div>
 
   <button class="btn-primary" id="generateBtn" onclick="generate()">✨ Generate InMail Messages</button>
@@ -132,24 +149,39 @@
 </div>
 
 <script>
+// ── Config ───────────────────────────────────────────────
 const GROQ_KEY = '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';
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const MODEL    = 'llama-3.3-70b-versatile';
 
-let cta = 'cv', fuCount = 1, openSection = null;
+// ── App State (single source of truth) ──────────────────
+const state = { cta: 'cv', fuCount: 1, openSection: null };
 
-function setCTA(t) {
-  cta = t;
-  document.getElementById('ctaCV').className   = 'cta-btn'+(t==='cv'  ?' active-cv':'');
-  document.getElementById('ctaCall').className = 'cta-btn'+(t==='call'?' active-call':'');
+// ── CTA Toggle ───────────────────────────────────────────
+function setCTA(val) {
+  state.cta = val;
+  document.getElementById('btnCV').className   = 'cta-btn' + (val === 'cv'   ? ' active-cv'   : '');
+  document.getElementById('btnCall').className = 'cta-btn' + (val === 'call' ? ' active-call' : '');
+  document.getElementById('ctaIndicator').textContent = val === 'cv' ? 'CV Ask selected' : 'Interest + Call selected';
+  document.getElementById('ctaIndicator').className = 'state-indicator ' + (val === 'cv' ? 'state-cv' : 'state-call');
+  document.getElementById('dbCTA').textContent = val === 'cv' ? 'CV Ask' : 'Interest + Call';
+  console.log('CTA set to:', state.cta);
 }
 
+// ── Follow-Up Count ──────────────────────────────────────
 function setFU(n) {
-  fuCount = n;
-  [1,2,3].forEach(i => document.getElementById('fu'+i).className='count-btn'+(i===n?' active':''));
-  document.getElementById('fuDesc').textContent = n===1?'1 gentle follow-up':n===2?'1 gentle + 1 more direct follow-up':'1 gentle + 1 direct + 1 final nudge';
+  state.fuCount = n;
+  [1,2,3].forEach(i => {
+    document.getElementById('fuBtn'+i).className = 'count-btn' + (i === n ? ' active' : '');
+  });
+  const descs = { 1:'1 gentle follow-up', 2:'1 gentle + 1 more direct follow-up', 3:'1 gentle + 1 direct + 1 final nudge' };
+  document.getElementById('fuDesc').textContent = descs[n];
+  document.getElementById('fuIndicator').textContent = n + ' selected';
+  document.getElementById('dbFU').textContent = n;
+  console.log('FU count set to:', state.fuCount);
 }
 
+// ── Helpers ──────────────────────────────────────────────
 function esc(s)  { return (s||'').replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$'); }
 function escH(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
@@ -166,18 +198,19 @@ function copyText(text, id) {
 }
 
 function toggleSection(id) {
-  const was = openSection === id;
+  const was = state.openSection === id;
   document.querySelectorAll('.msg-body').forEach(e => e.classList.remove('open'));
   document.querySelectorAll('.chevron').forEach(e => e.textContent = '▼');
-  openSection = was ? null : id;
-  if (openSection) {
-    document.getElementById('body-'+openSection)?.classList.add('open');
-    const c = document.getElementById('chev-'+openSection);
+  state.openSection = was ? null : id;
+  if (state.openSection) {
+    document.getElementById('body-' + state.openSection)?.classList.add('open');
+    const c = document.getElementById('chev-' + state.openSection);
     if (c) c.textContent = '▲';
   }
 }
 
 function msgCard(id, icon, badge, bCls, title, subj, body) {
+  const bodyFormatted = (body||'').replace(/\\n/g, '\n');
   return `<div class="msg-card">
     <div class="msg-header" onclick="toggleSection('${id}')">
       <span>${icon}</span>
@@ -187,16 +220,18 @@ function msgCard(id, icon, badge, bCls, title, subj, body) {
     </div>
     <div class="msg-body" id="body-${id}">
       <div class="inner-box" style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;">
-        <div style="flex:1;"><div class="micro-label">Suggested Subject</div>
-        <div style="color:rgba(255,255,255,0.9);font-size:0.875rem;font-weight:500;">"${escH(subj)}"</div></div>
+        <div style="flex:1;">
+          <div class="micro-label">Suggested Subject</div>
+          <div style="color:rgba(255,255,255,0.9);font-size:0.875rem;font-weight:500;">"${escH(subj)}"</div>
+        </div>
         <button class="copy-btn" id="cp-${id}-s" onclick="copyText(\`${esc(subj)}\`,'cp-${id}-s')">📋 Copy</button>
       </div>
       <div class="inner-box">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
           <div class="micro-label">Message Body</div>
-          <button class="copy-btn" id="cp-${id}-b" onclick="copyText(\`${esc(body)}\`,'cp-${id}-b')">📋 Copy</button>
+          <button class="copy-btn" id="cp-${id}-b" onclick="copyText(\`${esc(bodyFormatted)}\`,'cp-${id}-b')">📋 Copy</button>
         </div>
-        <pre>${escH(body)}</pre>
+        <pre>${escH(bodyFormatted)}</pre>
       </div>
     </div>
   </div>`;
@@ -204,146 +239,167 @@ function msgCard(id, icon, badge, bCls, title, subj, body) {
 
 function showError(msg) {
   const b = document.getElementById('errorBox');
-  b.textContent = '⚠️ ' + msg; b.style.display = 'block';
+  b.innerHTML = '⚠️ ' + msg; b.style.display = 'block';
 }
 
+// ── Generate ─────────────────────────────────────────────
 async function generate() {
   const jd     = document.getElementById('jd').value.trim();
   const jobUrl = document.getElementById('jobUrl').value.trim();
   const sample = document.getElementById('sampleInMail').value.trim();
+
   document.getElementById('errorBox').style.display = 'none';
   if (!jd)     { showError('Please paste the Job Description.'); return; }
   if (!jobUrl) { showError('Please enter the Job URL.'); return; }
+
+  // Read state at time of click
+  const currentCTA = state.cta;
+  const currentFU  = state.fuCount;
+  console.log('Generating with CTA:', currentCTA, 'FU count:', currentFU);
 
   const btn = document.getElementById('generateBtn');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Crafting your InMails...';
   document.getElementById('results').style.display = 'none';
 
-  const ctaText = cta === 'cv'
-    ? 'End the outreach message by directly asking the candidate to share their updated CV so you can discuss further details.'
-    : 'End the outreach message by checking if the candidate is open to this opportunity and proposing a short 15-minute introductory call to discuss further.';
+  // Build CTA instruction
+  const ctaInstruction = currentCTA === 'cv'
+    ? 'The outreach message must end with asking the candidate to share their updated CV so you can discuss further details.'
+    : 'The outreach message must end by asking if the candidate is open to this opportunity and suggesting a short 15-minute introductory call.';
+
+  // Build follow-up schema and rules
+  const fu2schema = currentFU >= 2 ? `,"followUp2":{"subject":"string","body":"string"}` : '';
+  const fu3schema = currentFU >= 3 ? `,"followUp3":{"subject":"string","body":"string"}` : '';
+
+  let fuInstruction = '';
+  if (currentFU === 1) {
+    fuInstruction = 'Generate exactly 1 follow-up message with the key "followUp". It should be 60-80 words, warm and polite, referencing the previous outreach, and must include the job URL.';
+  } else if (currentFU === 2) {
+    fuInstruction = 'Generate exactly 2 follow-up messages: "followUp" (60-80 words, warm, polite, includes job URL) and "followUp2" (50-70 words, slightly more direct, still polite, includes job URL).';
+  } else {
+    fuInstruction = 'Generate exactly 3 follow-up messages: "followUp" (60-80 words, warm, polite, includes job URL), "followUp2" (50-70 words, more direct, includes job URL), and "followUp3" (40-60 words, final polite nudge making clear this is the last message, includes job URL).';
+  }
 
   const defaultSamples = `Sample 1:
 Hi {firstName}, I'm Vikash from the Talent Sourcing team at Confluent, and I hope you're doing well.
-I'm currently hiring for a Staff Security Engineer II role at Confluent (Remote – India), focused on shaping application security architecture across large-scale distributed systems and cloud platforms.
+I'm currently hiring for a Staff Security Engineer II role at Confluent (Remote - India), focused on shaping application security architecture across large-scale distributed systems and cloud platforms.
 Job link: https://careers.confluent.io/jobs/...
-If this aligns with your experience or interests, please feel free to share your CV, and we can discuss further. Regards
+If this aligns with your experience or interests, please feel free to share your CV, and we can discuss further.
+Looking forward to hearing from you. Regards, Vikash
 
 Sample 2:
 Hi {firstName}, I'm the Lead Talent Sourcer for Technical Management positions across EMEA here at Confluent.
-We're building the next-generation cloud network data plane to scale our Confluent Cloud platform.
+We're building the next-generation cloud network data plane to scale our Confluent Cloud platform. We're looking for a Staff Software Engineer with strong expertise in distributed systems, networking, and large-scale cloud systems.
 Role details: [Job Link] — Full-time permanent role (no B2B).
-Let me know if this sounds interesting — I'd be happy to connect and share more details. Best Regards
+Let me know if this sounds interesting — I'd be happy to connect and share more details. Best Regards, Vikash
 
 Sample 3:
-Hi {firstName}, I'm Vikash Chauhan from Confluent's Talent Sourcing team.
-Our Stream Processing & Analytics team is building the next-generation Apache Flink-based stream processing engine to power Confluent Cloud.
-We are hiring a Staff Engineer to define the long-term vision for a truly cloud-native data stream processor.
-[Job Link] — Germany. Would you be open to discussing this? Best Regards`;
+Hi {firstName}, I'm Vikash Chauhan from Confluent's Talent Sourcing team, and I'm reaching out with an exciting opportunity.
+Our Stream Processing & Analytics team is building the next-generation Apache Flink-based stream processing engine to power Confluent Cloud — an elastic, reliable, and cost-efficient platform.
+We are hiring a Staff Engineer to define the long-term vision for a truly cloud-native data stream processor. This role offers the chance to architect scalable distributed systems, lead open-source contributions, drive technical strategy, and mentor engineers across AWS, Azure, and GCP at massive scale.
+[Job Link] — Germany
+Would you be open to discussing this opportunity? Best Regards, Vikash`;
 
   const sampleBlock = sample
-    ? `Here are sample InMails I have previously written — match my tone and style but improve them:\n"""\n${sample}\n"""\n`
-    : `Here are sample InMails I have previously written — match my tone and style but improve them:\n"""\n${defaultSamples}\n"""\n`;
+    ? `Here are sample InMails I have previously written. Match my tone, style, structure, and formatting exactly — but improve the content quality:\n"""\n${sample}\n"""\n`
+    : `Here are sample InMails I have previously written. Match my tone, style, structure, and formatting exactly — but improve the content quality:\n"""\n${defaultSamples}\n"""\n`;
 
-  const fu2s = fuCount>=2 ? `,"followUp2":{"subject":"string","body":"string"}` : '';
-  const fu3s = fuCount>=3 ? `,"followUp3":{"subject":"string","body":"string"}` : '';
-  const fuRule = fuCount===1
-    ? `- Generate ONLY 1 follow-up with key "followUp": 50-80 words, warm and courteous, includes job URL naturally. DO NOT generate followUp2 or followUp3.`
-    : fuCount===2
-    ? `- Generate exactly 2 follow-ups: "followUp" (50-80 words, warm, includes job URL) AND "followUp2" (50-70 words, slightly more direct, includes job URL). DO NOT generate followUp3.`
-    : `- Generate exactly 3 follow-ups: "followUp" (50-80 words, warm, includes job URL), "followUp2" (50-70 words, more direct, includes job URL), AND "followUp3" (40-60 words, final polite nudge, last attempt, includes job URL).`;
-
-  const prompt = `You are an expert LinkedIn recruiter and copywriter working for Confluent's Talent Sourcing team. Your job is to write compelling, human, personalized InMail messages that feel like they were written by a real recruiter — not a bot.
+  const prompt = `You are an expert LinkedIn recruiter copywriter working for Confluent's Talent Sourcing team. Generate compelling, human, well-formatted InMail messages.
 
 Job Description:
 """
 ${jd}
 """
+
 Job URL: ${jobUrl}
-CTA: ${ctaText}
+
+CTA INSTRUCTION (MUST FOLLOW): ${ctaInstruction}
+
+FOLLOW-UP INSTRUCTION (MUST FOLLOW): ${fuInstruction}
+
 ${sampleBlock}
 
-Return ONLY a raw JSON object (no markdown, no backticks, no explanation):
-{"subjectLines":["s1","s2","s3","s4"],"outreach":{"subject":"string","body":"string"},"followUp":{"subject":"string","body":"string"}${fu2s}${fu3s}}
+OUTPUT FORMAT: Return ONLY a valid JSON object. No markdown. No backticks. No text before or after.
+Use \\n for line breaks inside JSON strings. Never use raw line breaks inside JSON strings.
 
-SUBJECT LINE RULES (very important):
-- Must feel curiosity-driven and human — NOT like a job title copy-paste
-- Must mention "Confluent" naturally AND the job location (e.g. "Remote, India" or "Germany")
-- Use creative angles like: excitement, opportunity, team mission, impact, exclusivity
-- Good examples: "An exciting opportunity with Confluent – Remote, India", "Could this be your next big move? | Confluent, Remote", "Confluent is hiring — and we thought of you | Remote, India"
-- Bad examples (never do this): "Confluent India Staff Security Engineer", "Confluent Remote India Security Role"
-- Max 12 words, no ALL CAPS, no generic job title dumps
+JSON structure:
+{"subjectLines":["s1","s2","s3","s4"],"outreach":{"subject":"string","body":"string"},"followUp":{"subject":"string","body":"string"}${fu2schema}${fu3schema}}
 
-OUTREACH MESSAGE RULES (very important):
-- Length: 150-200 words minimum. Must feel rich, warm and well-structured
-- Structure it exactly like this with line breaks:
-  Line 1: Warm greeting + who you are + your role at Confluent
-  Line 2-3: What the team is building — make it sound exciting and meaningful. Include technical context from the JD.
-  Line 4-5: What makes this role special — impact, scale, tech stack, team mission
-  Line 6: Job URL embedded naturally (e.g. "You can find more details here: [URL]")
-  Line 7: CTA line — either ask for CV or propose a call based on instruction
-  Line 8: Warm sign-off
-- Never use [Name] or {firstName} — start with "Hi there," or "Hello,"
-- Write like a real human recruiter — warm, genuine, enthusiastic but professional
+SUBJECT LINE RULES:
+- Must feel human, curiosity-driven — NOT a job title dump
+- Must naturally include "Confluent" AND the job location from the JD
+- Good: "An exciting opportunity with Confluent – Remote, India" or "Could this be your next big move? | Confluent, Remote"
+- Bad: "Confluent India Staff Security Engineer" or "Confluent Remote India Security Role"
+- Max 12 words. No ALL CAPS.
 
-FOLLOW-UP RULES:
-${fuRule}
-- Follow-ups must also include the job URL naturally
-- Keep them short but warm — reference the previous outreach briefly
+OUTREACH BODY RULES:
+- Minimum 160 words. Rich, warm, well-structured with proper paragraph spacing using \\n\\n between paragraphs
+- Paragraph 1: Warm greeting ("Hi there," or "Hello,") + who you are + your role at Confluent
+- Paragraph 2: What the team is building — exciting, meaningful, include technical context from JD
+- Paragraph 3: What makes this role special — impact, scale, tech stack, team mission
+- Paragraph 4: Job URL line — e.g. "You can explore the full role details here: [URL]"
+- Paragraph 5: CTA line — MUST follow the CTA instruction above exactly
+- Paragraph 6: Warm sign-off with name "Vikash"
 
-CRITICAL JSON RULES:
-- Return ONLY a valid raw JSON object
-- Inside JSON string values, use \\n for line breaks — never raw line breaks
-- No markdown, no backticks, no text before or after the JSON
-- Escape all special characters properly inside JSON strings
+FOLLOW-UP BODY RULES:
+- Must follow the follow-up instruction above exactly
+- Must include the job URL naturally
+- Use \\n\\n between paragraphs`;
 
   try {
     const res = await fetch(GROQ_URL, {
       method: 'POST',
-      headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${GROQ_KEY}` },
-      body: JSON.stringify({ model: MODEL, messages:[{role:'user',content:prompt}], temperature:0.8, max_tokens:2000 })
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${GROQ_KEY}`
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.75,
+        max_tokens: 2500
+      })
     });
+
     const data = await res.json();
     if (data.error) throw new Error(data.error.message);
-    const raw = data.choices?.[0]?.message?.content || '';
-    const clean = raw
-      .replace(/```json|```/gi, '')
-      .replace(/[\u0000-\u001F\u007F]/g, m => {
-        if (m === '\n') return '\\n';
-        if (m === '\r') return '\\r';
-        if (m === '\t') return '\\t';
-        return '';
-      })
-      .trim();
-    let r;
-    try {
-      r = JSON.parse(clean);
-    } catch(e) {
-      // Try extracting JSON between first { and last }
-      const start = clean.indexOf('{');
-      const end = clean.lastIndexOf('}');
-      if (start !== -1 && end !== -1) {
-        r = JSON.parse(clean.slice(start, end + 1));
-      } else throw e;
-    }
 
-    document.getElementById('subjLines').innerHTML = (r.subjectLines||[]).map((s,i)=>
-      `<div class="subj-card"><span style="color:rgba(255,255,255,0.88);font-size:0.875rem;flex:1;">"${escH(s)}"</span><button class="copy-btn" id="cs${i}" onclick="copyText(\`${esc(s)}\`,'cs${i}')">📋 Copy</button></div>`
+    const raw = data.choices?.[0]?.message?.content || '';
+    console.log('Raw response:', raw.substring(0, 200));
+
+    // Clean and parse JSON
+    let clean = raw.replace(/```json|```/gi, '').trim();
+    // Extract JSON object if there's surrounding text
+    const start = clean.indexOf('{');
+    const end   = clean.lastIndexOf('}');
+    if (start !== -1 && end !== -1) clean = clean.slice(start, end + 1);
+
+    const r = JSON.parse(clean);
+    console.log('Parsed result keys:', Object.keys(r));
+
+    // Render subject lines
+    document.getElementById('subjLines').innerHTML = (r.subjectLines || []).map((s, i) =>
+      `<div class="subj-card">
+        <span style="color:rgba(255,255,255,0.88);font-size:0.875rem;flex:1;">"${escH(s)}"</span>
+        <button class="copy-btn" id="cs${i}" onclick="copyText(\`${esc(s)}\`,'cs${i}')">📋 Copy</button>
+      </div>`
     ).join('');
 
-    let cards='';
-    cards += msgCard('outreach','📤','Outreach','badge-blue','First Outreach InMail',r.outreach?.subject,r.outreach?.body);
-    cards += msgCard('followup','💬','Follow-Up 1','badge-indigo','1st Follow-Up InMail',r.followUp?.subject,r.followUp?.body);
-    if(r.followUp2) cards += msgCard('followup2','💬','Follow-Up 2','badge-purple','2nd Follow-Up InMail',r.followUp2.subject,r.followUp2.body);
-    if(r.followUp3) cards += msgCard('followup3','💬','Follow-Up 3','badge-pink','3rd Follow-Up InMail',r.followUp3.subject,r.followUp3.body);
+    // Render message cards
+    let cards = '';
+    cards += msgCard('outreach', '📤', 'Outreach',    'badge-blue',   'First Outreach InMail', r.outreach?.subject,  r.outreach?.body);
+    cards += msgCard('followup', '💬', 'Follow-Up 1', 'badge-indigo', '1st Follow-Up InMail',  r.followUp?.subject,  r.followUp?.body);
+    if (r.followUp2) cards += msgCard('followup2', '💬', 'Follow-Up 2', 'badge-purple', '2nd Follow-Up InMail', r.followUp2.subject, r.followUp2.body);
+    if (r.followUp3) cards += msgCard('followup3', '💬', 'Follow-Up 3', 'badge-pink',   '3rd Follow-Up InMail', r.followUp3.subject, r.followUp3.body);
     document.getElementById('msgCards').innerHTML = cards;
 
     document.getElementById('results').style.display = 'block';
-    setTimeout(()=>document.getElementById('results').scrollIntoView({behavior:'smooth'}),100);
+    setTimeout(() => document.getElementById('results').scrollIntoView({ behavior: 'smooth' }), 100);
     toggleSection('outreach');
+
   } catch(err) {
-    showError('Something went wrong: ' + err.message + '. Please try again.');
+    console.error('Error:', err);
+    showError('Something went wrong: ' + err.message + '<br>Please try again.');
   } finally {
     btn.disabled = false;
     btn.innerHTML = '✨ Generate InMail Messages';
@@ -351,13 +407,14 @@ CRITICAL JSON RULES:
 }
 
 function resetAll() {
-  document.getElementById('jd').value='';
-  document.getElementById('jobUrl').value='';
-  document.getElementById('sampleInMail').value='';
-  setCTA('cv'); setFU(1);
-  document.getElementById('results').style.display='none';
-  document.getElementById('errorBox').style.display='none';
-  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('jd').value = '';
+  document.getElementById('jobUrl').value = '';
+  document.getElementById('sampleInMail').value = '';
+  setCTA('cv');
+  setFU(1);
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('errorBox').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>
 </body>
